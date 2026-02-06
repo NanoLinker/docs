@@ -1,0 +1,82 @@
+---
+title: "产品展示"
+description: "AI 生成产品展示和演示视频"
+icon: "box-open"
+---
+
+## 场景介绍
+
+产品展示视频是电商和品牌营销的重要素材。AI 图生视频可以快速将产品图片转化为动态展示视频，降低视频制作成本。
+
+## 适用场景
+
+- **商品展示**：360° 旋转展示、细节特写
+- **功能演示**：产品使用场景动态化
+- **开箱视频**：产品开箱过程动画
+- **品牌宣传**：产品形象动态展示
+
+## 推荐模型
+
+| 场景 | 推荐模型 | 原因 |
+|------|----------|------|
+| 快速展示 | `wan2.6-i2v-flash-5s-1080p` | 速度快，适合批量生成 |
+| 高质量展示 | `wan2.6-i2v-5s-1080p` | 更高质量，适合重要产品 |
+| 长展示 | `wan2.6-i2v-10s-1080p` | 更长时间展示产品细节 |
+
+## 示例：商品旋转展示
+
+生成产品 360° 旋转展示视频：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-5s-1080p",
+    "prompt": "Product slowly rotating 360 degrees, smooth camera movement, professional studio lighting, white background, premium product showcase",
+    "metadata": {
+      "input": {
+        "img_url": "https://example.com/product.png"
+      }
+    }
+  }'
+```
+
+## 示例：使用场景演示
+
+展示产品在实际使用中的场景：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-10s-1080p",
+    "prompt": "A person using the smartwatch, checking notifications, smooth wrist movements, modern lifestyle, natural lighting",
+    "metadata": {
+      "input": {
+        "img_url": "https://example.com/smartwatch-lifestyle.png"
+      }
+    }
+  }'
+```
+
+## 最佳实践
+
+<Tip>
+1. **高清产品图**：使用高分辨率、背景干净的产品图
+2. **明确动作**：描述具体的展示动作（旋转、缩放、使用等）
+3. **场景匹配**：prompt 中的场景描述要与原图匹配
+</Tip>
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="万相 图生视频" icon="video" href="/zh/video-api/wan-i2v">
+    查看完整的视频生成 API 文档
+  </Card>
+  <Card title="电商商品图" icon="cart-shopping" href="/zh/use-cases/ecommerce">
+    了解电商图片生成场景
+  </Card>
+</CardGroup>
+

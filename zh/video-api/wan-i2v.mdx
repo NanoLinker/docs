@@ -1,0 +1,279 @@
+---
+title: "万相 图生视频"
+description: "阿里通义万相系列图生视频API"
+icon: "video"
+---
+
+## 概述
+
+阿里通义万相系列图生视频模型，支持从图片生成视频，包含多种规格和时长选择。支持有声/无声视频生成。
+
+<Card title="阿里百炼官方文档" icon="link" href="https://bailian.console.aliyun.com/cn-beijing/?tab=api&productCode=p_efm#/api/?type=model&url=2867393">
+  查看完整的API参数说明
+</Card>
+
+## 请求参数
+
+<Warning>
+**AIGC.IT 参数规范：** 除了顶层必要参数（`model`、`prompt`）外，所有其他参数都必须放在 `metadata` 对象内。这是 AIGC.IT 的统一要求。
+</Warning>
+
+### 顶层参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `model` | string | 是 | 模型名称，如 `wan2.6-i2v-flash-5s-720p` |
+| `prompt` | string | 是 | 文本提示词，描述视频内容，最多 1500 字符 |
+
+### metadata.input 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `img_url` | string | 是 | 首帧图像的 URL 或 Base64 编码 |
+| `audio_url` | string | 否 | 音频文件 URL，用于生成配音视频 |
+| `negative_prompt` | string | 否 | 反向提示词，最多 500 字符 |
+| `template` | string | 否 | 视频特效模板名称 |
+
+### metadata.parameters 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `resolution` | string | 否 | 视频分辨率：`480P`、`720P`、`1080P` |
+| `duration` | integer | 否 | 视频时长（秒）：`5`、`10`、`15` |
+| `prompt_extend` | boolean | 否 | 是否开启 prompt 智能改写，默认 `true` |
+| `shot_type` | string | 否 | 镜头类型：`single`（单镜头）、`multi`（多镜头） |
+| `audio` | boolean | 否 | 是否生成有声视频，默认 `true`（仅有声模型） |
+| `watermark` | boolean | 否 | 是否添加水印，默认 `false` |
+| `seed` | integer | 否 | 随机种子，范围 [0, 2147483647] |
+
+### 请求结构示例
+
+```json
+{
+  "model": "wan2.6-i2v-flash-5s-720p",    // 顶层参数
+  "prompt": "视频描述文本",                 // 顶层参数
+  "metadata": {                            // 其他参数都在 metadata 内
+    "input": {
+      "img_url": "https://...",            // 输入参数
+      "audio_url": "https://...",          // 可选
+      "negative_prompt": "..."             // 可选
+    },
+    "parameters": {
+      "prompt_extend": true,               // 处理参数
+      "shot_type": "single",
+      "watermark": false
+    }
+  }
+}
+```
+
+<Note>
+**说明：** 模型名称已包含分辨率和时长信息，如 `wan2.6-i2v-flash-5s-720p` 表示 5秒 720P，因此 `parameters` 中的 `resolution` 和 `duration` 会被模型名称覆盖。
+</Note>
+
+## 支持的模型
+
+### wan2.5-i2v-preview 预览版
+
+| 模型名称 | 描述 |
+|----------|------|
+| `wan2.5-i2v-preview-5s-480p` | 万相2.5预览版 图生视频(首帧) 5秒 480P |
+| `wan2.5-i2v-preview-5s-720p` | 万相2.5预览版 图生视频(首帧) 5秒 720P |
+| `wan2.5-i2v-preview-5s-1080p` | 万相2.5预览版 图生视频(首帧) 5秒 1080P |
+| `wan2.5-i2v-preview-10s-480p` | 万相2.5预览版 图生视频(首帧) 10秒 480P |
+| `wan2.5-i2v-preview-10s-720p` | 万相2.5预览版 图生视频(首帧) 10秒 720P |
+| `wan2.5-i2v-preview-10s-1080p` | 万相2.5预览版 图生视频(首帧) 10秒 1080P |
+
+### wan2.6-i2v-flash 极速版
+
+#### 无声版本
+
+| 模型名称 | 描述 |
+|----------|------|
+| `wan2.6-i2v-flash-5s-720p` | 万相2.6极速版 5秒 720P 无声 |
+| `wan2.6-i2v-flash-5s-1080p` | 万相2.6极速版 5秒 1080P 无声 |
+| `wan2.6-i2v-flash-10s-720p` | 万相2.6极速版 10秒 720P 无声 |
+| `wan2.6-i2v-flash-10s-1080p` | 万相2.6极速版 10秒 1080P 无声 |
+| `wan2.6-i2v-flash-15s-720p` | 万相2.6极速版 15秒 720P 无声 |
+| `wan2.6-i2v-flash-15s-1080p` | 万相2.6极速版 15秒 1080P 无声 |
+
+#### 有声版本
+
+| 模型名称 | 描述 |
+|----------|------|
+| `wan2.6-i2v-flash-5s-720p-audio` | 万相2.6极速版 5秒 720P 有声 |
+| `wan2.6-i2v-flash-5s-1080p-audio` | 万相2.6极速版 5秒 1080P 有声 |
+| `wan2.6-i2v-flash-10s-720p-audio` | 万相2.6极速版 10秒 720P 有声 |
+| `wan2.6-i2v-flash-10s-1080p-audio` | 万相2.6极速版 10秒 1080P 有声 |
+| `wan2.6-i2v-flash-15s-720p-audio` | 万相2.6极速版 15秒 720P 有声 |
+| `wan2.6-i2v-flash-15s-1080p-audio` | 万相2.6极速版 15秒 1080P 有声 |
+
+### wan2.6-i2v 标准版
+
+| 模型名称 | 描述 |
+|----------|------|
+| `wan2.6-i2v-5s-720p` | 万相2.6标准版 5秒 720P |
+| `wan2.6-i2v-5s-1080p` | 万相2.6标准版 5秒 1080P |
+| `wan2.6-i2v-10s-720p` | 万相2.6标准版 10秒 720P |
+| `wan2.6-i2v-10s-1080p` | 万相2.6标准版 10秒 1080P |
+| `wan2.6-i2v-15s-720p` | 万相2.6标准版 15秒 720P |
+| `wan2.6-i2v-15s-1080p` | 万相2.6标准版 15秒 1080P |
+
+---
+
+## 用例
+
+### 基础图生视频（无声）
+
+使用首帧图片生成无声视频：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-5s-720p",
+    "prompt": "镜头从下方缓缓向上移动，展现一只可爱的猫咪在草地上奔跑，阳光洒落",
+    "metadata": {
+      "input": {
+        "img_url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/wpimhv/rap.png"
+      },
+      "parameters": {
+        "prompt_extend": true,
+        "shot_type": "single"
+      }
+    }
+  }'
+```
+
+**返回示例：**
+```json
+{
+  "id": "0385dc79-5ff8-4d82-bcb6-xxxxxx",
+  "model": "wan2.6-i2v-flash-5s-720p",
+  "status": "pending",
+  "created_at": 1234567890
+}
+```
+
+---
+
+### 有声视频生成
+
+使用有声模型生成带音效的视频：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-10s-720p-audio",
+    "prompt": "一幅都市奇幻艺术的场景。一个充满动感的涂鸦艺术角色。一个由喷漆所画成的少年，正从一面混凝土墙上活过来。他一边用极快的语速演唱一首英文rap，一边摆着一个经典的、充满活力的说唱歌手姿势。场景设定在夜晚一个充满都市感的铁路桥下。",
+    "metadata": {
+      "input": {
+        "img_url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/wpimhv/rap.png"
+      },
+      "parameters": {
+        "prompt_extend": true,
+        "shot_type": "multi"
+      }
+    }
+  }'
+```
+
+---
+
+### 配音视频生成
+
+使用自定义音频文件生成配音视频：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-10s-720p-audio",
+    "prompt": "一幅都市奇幻艺术的场景，少年正在演唱rap",
+    "metadata": {
+      "input": {
+        "img_url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/wpimhv/rap.png",
+        "audio_url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/ozwpvi/rap.mp3"
+      },
+      "parameters": {
+        "prompt_extend": true
+      }
+    }
+  }'
+```
+
+---
+
+### 高清长视频生成
+
+生成 15 秒 1080P 高清视频：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-15s-1080p",
+    "prompt": "电影级画面，镜头缓缓推进，展现壮丽的山川风景，云雾缭绕",
+    "metadata": {
+      "input": {
+        "img_url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/wpimhv/rap.png",
+        "negative_prompt": "低分辨率、模糊、抖动、画质差"
+      },
+      "parameters": {
+        "prompt_extend": true,
+        "watermark": false
+      }
+    }
+  }'
+```
+
+---
+
+### 查询任务结果
+
+```bash
+curl https://api.aigc.it/v1/videos/<TASK_ID> \
+  -H "Authorization: Bearer <YOUR_TOKEN>"
+```
+
+**返回示例：**
+
+<CodeGroup>
+```json 排队中
+{
+  "id": "0385dc79-5ff8-4d82-bcb6-xxxxxx",
+  "status": "pending"
+}
+```
+
+```json 处理中
+{
+  "id": "0385dc79-5ff8-4d82-bcb6-xxxxxx",
+  "status": "processing"
+}
+```
+
+```json 已完成
+{
+  "id": "0385dc79-5ff8-4d82-bcb6-xxxxxx",
+  "status": "succeeded",
+  "video_url": "https://..."
+}
+```
+
+```json 失败
+{
+  "id": "0385dc79-5ff8-4d82-bcb6-xxxxxx",
+  "status": "failed",
+  "error": {
+    "message": "错误描述"
+  }
+}
+```
+</CodeGroup>
+

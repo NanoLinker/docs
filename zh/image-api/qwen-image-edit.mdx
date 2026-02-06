@@ -1,0 +1,285 @@
+---
+title: "qwen-image-edit 图像编辑"
+description: "阿里通义千问图像编辑API"
+icon: "wand-magic-sparkles"
+---
+
+## 概述
+
+阿里通义千问图像编辑模型，支持单图编辑和多图融合。
+
+## 支持的模型
+
+| 模型名称 | 特点 | 输出图片数 | 自定义分辨率 |
+|----------|------|------------|--------------|
+| `qwen-image-edit-max` | 最高质量，支持提示词智能改写 | 1-6 张 | ✅ 支持 |
+| `qwen-image-edit-plus` | 高质量 | 1-6 张 | ✅ 支持 |
+| `qwen-image-edit-plus-2025-12-15` | 高质量（指定版本） | 1-6 张 | ✅ 支持 |
+| `qwen-image-edit` | 基础版本 | 仅 1 张 | ❌ 不支持 |
+
+<Card title="官方API文档" icon="link" href="https://bailian.console.aliyun.com/cn-beijing/?tab=api&productCode=p_efm#/api/?type=model&url=2976416">
+  查看阿里百炼官方API参数说明
+</Card>
+
+## 用例
+
+### 单图编辑 - 场景重绘
+
+根据深度图生成新场景：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "qwen-image-edit-max",
+    "input": {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/fpakfo/image36.webp"
+            },
+            {
+              "text": "生成一张符合深度图的图像，遵循以下描述：一辆红色的破旧的自行车停在一条泥泞的小路上，背景是茂密的原始森林"
+            }
+          ]
+        }
+      ]
+    },
+    "parameters": {
+      "n": 2,
+      "prompt_extend": true,
+      "watermark": false,
+      "size": "1536*1024"
+    }
+  }'
+```
+
+### 多图融合 - 虚拟换装
+
+将图1人物穿上图2的服装，按图3的姿势：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "qwen-image-edit-max",
+    "input": {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/thtclx/input1.png"
+            },
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/iclsnx/input2.png"
+            },
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/gborgw/input3.png"
+            },
+            {
+              "text": "图1中的女生穿着图2中的黑色裙子按图3的姿势坐下"
+            }
+          ]
+        }
+      ]
+    },
+    "parameters": {
+      "n": 2,
+      "prompt_extend": true,
+      "watermark": false,
+      "size": "1024*1536"
+    }
+  }'
+```
+
+### 单图编辑 - 风格描述
+
+对图片进行风格化描述生成：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "qwen-image-edit-max",
+    "input": {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/fpakfo/image36.webp"
+            },
+            {
+              "text": "将这张图片转换为日系动漫风格，保持原有构图和色调"
+            }
+          ]
+        }
+      ]
+    },
+    "parameters": {
+      "n": 1,
+      "size": "1024*1024"
+    }
+  }'
+```
+
+### 双图融合 - 风格迁移
+
+将图1的内容用图2的风格重绘：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "qwen-image-edit-max",
+    "input": {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/thtclx/input1.png"
+            },
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/iclsnx/input2.png"
+            },
+            {
+              "text": "用图2的风格重新绘制图1的人物，保持人物特征不变"
+            }
+          ]
+        }
+      ]
+    },
+    "parameters": {
+      "n": 2,
+      "prompt_extend": true,
+      "size": "1024*1024"
+    }
+  }'
+```
+
+### 使用 seed 保持一致性
+
+使用相同 seed 生成风格一致的系列图片：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "qwen-image-edit-max",
+    "input": {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "image": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/thtclx/input1.png"
+            },
+            {
+              "text": "将人物的表情改为微笑，保持其他特征不变"
+            }
+          ]
+        }
+      ]
+    },
+    "parameters": {
+      "n": 1,
+      "seed": 12345678,
+      "size": "1024*1024"
+    }
+  }'
+```
+
+## 参数说明
+
+### 请求参数
+
+| 参数 | 类型 | 必选 | 说明 |
+|------|------|------|------|
+| `model` | string | ✅ | 模型名称，如 `qwen-image-edit-max`、`qwen-image-edit-plus`、`qwen-image-edit` |
+| `input.messages` | array | ✅ | 消息列表，当前仅支持单轮对话，数组内有且只有一个对象 |
+
+### input.messages 对象
+
+| 参数 | 类型 | 必选 | 说明 |
+|------|------|------|------|
+| `role` | string | ✅ | 消息发送者角色，必须设置为 `user` |
+| `content` | array | ✅ | 消息内容，包含 1-3 张图像和单个编辑指令 |
+
+### content 数组元素
+
+| 参数 | 类型 | 必选 | 说明 |
+|------|------|------|------|
+| `image` | string | ✅ | 输入图像的 URL 或 Base64 编码。支持 1-3 张图像，多图输入时按数组顺序定义图像顺序。<br/>**图像要求**：格式支持 JPG/JPEG/PNG/BMP/TIFF/WEBP/GIF，分辨率建议 384-3072 像素，大小不超过 10MB |
+| `text` | string | ✅ | 正向提示词，描述期望生成的图像内容。支持中英文，长度不超过 800 字符。**仅支持传入一个 text** |
+
+### parameters 参数
+
+| 参数 | 类型 | 必选 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `n` | integer | ❌ | 1 | 输出图像数量。`qwen-image-edit-max`/`qwen-image-edit-plus` 支持 1-6 张，`qwen-image-edit` 仅支持 1 张 |
+| `negative_prompt` | string | ❌ | - | 反向提示词，描述不希望在画面中看到的内容。长度上限 500 字符 |
+| `size` | string | ❌ | 自动 | 输出图像分辨率，格式为 `宽*高`，如 `1536*1024`。宽高取值范围 [512, 2048] 像素。**仅 max/plus 系列支持** |
+| `prompt_extend` | boolean | ❌ | true | 是否开启提示词智能改写，对简单提示词效果提升明显。**仅 max/plus 系列支持** |
+| `watermark` | boolean | ❌ | false | 是否在图像右下角添加 "Qwen-Image" 水印 |
+| `seed` | integer | ❌ | 随机 | 随机数种子，取值范围 [0, 2147483647]。相同 seed 可使生成内容相对稳定 |
+
+### 常见分辨率推荐
+
+| 比例 | 推荐分辨率 |
+|------|-----------|
+| 1:1 | `1024*1024`、`1536*1536` |
+| 2:3 | `768*1152`、`1024*1536` |
+| 3:2 | `1152*768`、`1536*1024` |
+| 9:16 | `720*1280`、`1080*1920` |
+| 16:9 | `1280*720`、`1920*1080` |
+
+## 消息格式
+
+消息内容支持图片和文本混合：
+
+```json
+{
+  "role": "user",
+  "content": [
+    {
+      "image": "https://example.com/image1.png"
+    },
+    {
+      "image": "https://example.com/image2.png"
+    },
+    {
+      "text": "将第一张图片中的人物服装替换为第二张图片中的服装"
+    }
+  ]
+}
+```
+
+## 模型选择建议
+
+| 场景 | 推荐模型 |
+|------|----------|
+| 高质量图像编辑 | `qwen-image-edit-max` |
+| 批量生成多张图片 | `qwen-image-edit-plus` |
+| 简单图像编辑 | `qwen-image-edit` |
+| 需要自定义分辨率 | `qwen-image-edit-max` 或 `qwen-image-edit-plus` |
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="Seedream 图片生成" icon="image" href="/zh/image-api/seedream">
+    字节Seedream系列，支持文生图
+  </Card>
+  <Card title="图像生成API选择指南" icon="compass" href="/zh/image-api/guide">
+    帮助您选择合适的模型
+  </Card>
+</CardGroup>
+

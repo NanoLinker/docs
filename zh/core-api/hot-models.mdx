@@ -1,0 +1,71 @@
+---
+title: "当下热门模型"
+description: "最受欢迎的AI模型推荐"
+icon: "fire"
+---
+
+## 视频生成推荐
+
+### 万相 2.6 极速版（推荐）
+
+适合快速生成短视频，支持有声视频。
+
+| 模型 | 时长 | 分辨率 | 特点 |
+|------|------|--------|------|
+| `wan2.6-i2v-flash-5s-1080p` | 5秒 | 1080P | 高清快速 |
+| `wan2.6-i2v-flash-5s-720p-audio` | 5秒 | 720P | 有声视频 |
+| `wan2.6-i2v-flash-10s-1080p` | 10秒 | 1080P | 中等时长 |
+
+### 万相 2.6 标准版
+
+更高质量的视频生成。
+
+| 模型 | 时长 | 分辨率 |
+|------|------|--------|
+| `wan2.6-i2v-5s-1080p` | 5秒 | 1080P |
+| `wan2.6-i2v-10s-1080p` | 10秒 | 1080P |
+| `wan2.6-i2v-15s-1080p` | 15秒 | 1080P |
+
+## 图像生成推荐
+
+### Seedream 4.5（推荐）
+
+字节最新图像生成模型，支持多种高级功能。
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "一只可爱的猫咪",
+    "size": "2K"
+  }'
+```
+
+**支持功能：**
+- ✅ 文生图
+- ✅ 图生图
+- ✅ 多图融合
+- ✅ 批量生成
+- ✅ 流式输出
+
+### qwen-image-edit 图像编辑
+
+适合图像编辑和修改场景。
+
+| 模型 | 特点 |
+|------|------|
+| `qwen-image-edit-max` | 最高质量，支持自定义分辨率 |
+| `qwen-image-edit-plus` | 高质量，支持自定义分辨率 |
+| `qwen-image-edit` | 基础版本 |
+
+## 快速选择指南
+
+| 场景 | 推荐模型 |
+|------|----------|
+| 快速生成短视频 | `wan2.6-i2v-flash-5s-1080p` |
+| 生成有声视频 | `wan2.6-i2v-flash-5s-720p-audio` |
+| 高质量文生图 | `seedream-4.5` |
+| 图像编辑修改 | `qwen-image-edit-max` |
+

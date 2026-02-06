@@ -1,0 +1,256 @@
+---
+title: "快速开始"
+description: "API接入教程：如何集成 AIGC.IT API 调用图片生成、视频生成等AI模型。含 Python、Node.js、curl 代码示例，三步完成接入。"
+icon: "rocket"
+---
+
+## 开始之前
+
+<Warning>
+**账户用途说明**
+
+注册账号用于API技术接入与企业系统集成。新账号获得的测试额度（$0.05）仅用于：
+- API接口连通性验证
+- 开发调试与技术测试
+- 系统集成前的功能验证
+
+不适用于生产环境或面向公众的内容交付服务。
+</Warning>
+
+本文会用**最简单**的方式，帮您实现API技术接入：
+- 统一接口调用多种图片和视频AI模型
+- OpenAI SDK兼容，代码改动最小化
+- 支持多种支付方式，按量计费
+
+## 第一步：注册并充值
+
+### 注册账号
+
+<Steps>
+  <Step title="访问注册页面">
+    打开 [AIGC.IT 注册页](https://api.aigc.it/register)
+
+    新账户将获得$0.05测试额度，用于API接口连通性验证
+  </Step>
+  <Step title="填写信息">
+    - 邮箱：任意邮箱即可
+    - 密码：至少8位字符
+    - 验证码：检查垃圾邮箱
+  </Step>
+  <Step title="登录控制台">
+    登录后进入[控制台首页](https://api.aigc.it/console)
+
+    您会看到：
+    - 账户余额（含测试额度）
+    - 使用统计
+    - 快速入门指引
+  </Step>
+</Steps>
+
+### 充值
+
+<Tabs>
+  <Tab title="支付宝/微信扫码">
+    1. 点击[充值页面](https://api.aigc.it/console/topup)
+    2. 起充 35 人民币（7美金），单次大额充值加赠 10%
+    3. 支付宝/微信扫码支付
+    4. 秒级到账，立即使用
+
+    <Info>
+    **充值说明**：
+    - 测试额度可用于验证接口连通性
+    - 充值秒到账，无需等待
+    - 企业服务请联系微信：`aigcit`
+    </Info>
+  </Tab>
+  <Tab title="企业对公转账">
+    支持企业对公转账：
+    - 开具增值税发票
+    - 提供采购合同
+    - 支持月结等方式
+
+    联系微信：aigcit
+  </Tab>
+</Tabs>
+
+## 第二步：获取API密钥
+
+### 两种方式获取密钥
+
+<Tabs>
+  <Tab title="使用默认密钥（推荐）">
+    1. 进入[令牌管理页](https://api.aigc.it/console/token)
+    2. 找到**默认令牌**
+    3. 点击右侧**复制**按钮
+
+    优点：立即可用，无需配置
+
+    <Warning>
+    **安全提醒**：
+    - 密钥只显示一次，请妥善保存
+    - 不要提交到GitHub公开仓库
+    - 建议使用环境变量存储
+    </Warning>
+  </Tab>
+  <Tab title="创建新密钥">
+    1. 点击左上角[添加令牌]按钮
+    2. 输入密钥名称
+    3. 设置额度限制（可选）
+    4. 点击创建
+
+    优点：精细管理，按项目分配
+  </Tab>
+</Tabs>
+
+## 第三步：完成首次调用
+
+### 接入配置信息
+
+<Tip>
+**记住这三个信息**
+
+```yaml
+# API基础地址
+base_url: https://api.aigc.it
+
+# API密钥（以sk-开头）
+api_key: sk-xxxxxxxxxxxxxx
+
+# 模型名称（即插即用）
+model: seedream-4.5  # 或 wan2.6-i2v-flash-5s-720p 等
+```
+</Tip>
+
+### 测试方法
+
+```bash
+# 替换YOUR_API_KEY为您的密钥
+curl -X POST https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "一只可爱的猫咪在阳光下打盹"
+  }'
+```
+
+### 各语言完整示例
+
+<Tabs>
+  <Tab title="Python（最常用）">
+    ```python
+    from openai import OpenAI
+
+    client = OpenAI(
+        api_key="sk-xxxxxxxxxxxxxx",
+        base_url="https://api.aigc.it/v1"
+    )
+
+    # 调用图像生成
+    response = client.images.generate(
+        model="seedream-4.5",
+        prompt="一只可爱的猫咪在阳光下打盹",
+        n=1,
+        size="1024x1024"
+    )
+
+    print(response.data[0].url)
+    ```
+  </Tab>
+  <Tab title="Node.js / TypeScript">
+    ```javascript
+    import OpenAI from 'openai';
+
+    const client = new OpenAI({
+      apiKey: 'sk-xxxxxxxxxxxxxx',
+      baseURL: 'https://api.aigc.it/v1'
+    });
+
+    // 调用图像生成
+    const response = await client.images.generate({
+      model: 'seedream-4.5',
+      prompt: '一只可爱的猫咪在阳光下打盹',
+      n: 1,
+      size: '1024x1024'
+    });
+
+    console.log(response.data[0].url);
+    ```
+  </Tab>
+  <Tab title="Curl / 命令行">
+    ```bash
+    # 调用图像生成
+    curl -X POST https://api.aigc.it/v1/images/generations \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "seedream-4.5",
+        "prompt": "一只可爱的猫咪在阳光下打盹"
+      }'
+
+    # 调用视频生成（创建任务）
+    curl -X POST https://api.aigc.it/v1/videos \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "wan2.6-i2v-flash-5s-720p",
+        "prompt": "一只猫在草地上奔跑",
+        "metadata": {
+          "input": {
+            "img_url": "https://example.com/cat.png"
+          }
+        }
+      }'
+
+    # 查询视频任务结果
+    curl https://api.aigc.it/v1/videos/TASK_ID \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+</Tabs>
+
+## 下一步
+
+恭喜！您已经成功完成了 AIGC.IT API 的接入。接下来您可以：
+
+<CardGroup cols={2}>
+  <Card title="查看 API 文档" icon="desktop" href="/zh/api-docs">
+    了解完整的 API 接口说明
+  </Card>
+  <Card title="探索模型列表" icon="list" href="/zh/core-api/hot-models">
+    查看所有支持的 AI 模型
+  </Card>
+  <Card title="集成到应用" icon="plug" href="/zh/image-api/seedream">
+    将 AIGC.IT API 集成到各种工具
+  </Card>
+  <Card title="查看使用统计" icon="chart-line" href="https://api.aigc.it/console">
+    在控制台监控使用情况
+  </Card>
+</CardGroup>
+
+## 常见问题速查
+
+<AccordionGroup>
+  <Accordion title="怎么判断接入成功？">
+    调用API后返回正常的JSON响应（包含图片URL或任务ID），且控制台显示有调用记录，即表示接入成功。
+  </Accordion>
+  <Accordion title="怎么选择合适的模型？">
+    - **图片生成**：推荐 Seedream 4.5，效果好、速度快
+    - **视频生成**：推荐万相 wan2.6 系列，支持图生视频
+    - 查看[热门模型](/zh/core-api/hot-models)了解更多选择
+  </Accordion>
+  <Accordion title="API密钥泄露了怎么办？">
+    立即前往[令牌管理页](https://api.aigc.it/console/token)删除泄露的密钥，并创建新密钥。建议使用环境变量存储密钥，避免硬编码在代码中。
+  </Accordion>
+  <Accordion title="为什么提示余额不足？">
+    测试额度（$0.05）仅用于接口连通性验证，实际使用需要[充值](https://api.aigc.it/console/topup)。起充35元人民币，大额充值有加赠。
+  </Accordion>
+  <Accordion title="支持哪些支付方式？">
+    支持支付宝、微信扫码支付。企业用户支持对公转账，可开具增值税发票，联系微信：aigcit
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+**提示**：保存好您的 API 密钥，并定期在控制台查看使用日志。每笔请求都有消费历史，合理优化成本。
+</Info>
+

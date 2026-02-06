@@ -1,0 +1,88 @@
+---
+title: "短视频创作"
+description: "使用 AI 快速生成短视频内容"
+icon: "video"
+---
+
+## 场景介绍
+
+短视频平台（抖音、快手、视频号等）需要持续产出内容。AI 图生视频可以将静态图片转化为动态视频，大幅降低创作门槛。
+
+## 适用场景
+
+- **图片动态化**：让静态照片"动起来"
+- **创意短片**：生成艺术风格的创意视频
+- **Vlog 素材**：快速生成过渡片段和 B-roll
+- **故事讲述**：将插画/漫画转为动态故事
+
+## 推荐模型
+
+| 场景 | 推荐模型 | 原因 |
+|------|----------|------|
+| 快速生成 | `wan2.6-i2v-flash-5s-1080p` | 速度快，1080P 高清 |
+| 有声视频 | `wan2.6-i2v-flash-5s-720p-audio` | 自动生成配音 |
+| 高质量 | `wan2.6-i2v-5s-1080p` | 更高质量输出 |
+| 长视频 | `wan2.6-i2v-15s-1080p` | 支持 15 秒时长 |
+
+## 示例：图片动态化
+
+将一张风景照片转为动态视频：
+
+```bash
+# 1. 创建任务
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-5s-1080p",
+    "prompt": "Gentle breeze blowing through the trees, clouds slowly moving across the sky, peaceful and serene atmosphere",
+    "metadata": {
+      "input": {
+        "img_url": "https://example.com/landscape.png"
+      }
+    }
+  }'
+
+# 2. 查询结果
+curl https://api.aigc.it/v1/videos/<TASK_ID> \
+  -H "Authorization: Bearer <YOUR_TOKEN>"
+```
+
+## 示例：有声短视频
+
+生成带有音效的动态视频：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-5s-720p-audio",
+    "prompt": "A cute cat playing with a ball, playful movements, happy and energetic",
+    "metadata": {
+      "input": {
+        "img_url": "https://example.com/cat.png"
+      }
+    }
+  }'
+```
+
+## 最佳实践
+
+<Tip>
+1. **清晰的动作描述**：在 prompt 中明确描述期望的动作和运动方式
+2. **选择合适时长**：5 秒适合社交媒体，10-15 秒适合完整叙事
+3. **高质量原图**：输入图片质量越高，生成效果越好
+</Tip>
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="万相 图生视频" icon="video" href="/zh/video-api/wan-i2v">
+    查看完整的视频生成 API 文档
+  </Card>
+  <Card title="热门模型" icon="fire" href="/zh/core-api/hot-models">
+    查看推荐模型列表
+  </Card>
+</CardGroup>
+

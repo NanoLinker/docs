@@ -1,0 +1,81 @@
+---
+title: "社交媒体配图"
+description: "快速生成社交媒体所需的精美配图"
+icon: "share-nodes"
+---
+
+## 场景介绍
+
+社交媒体运营需要持续产出高质量的视觉内容。AI 图像生成可以帮助快速创作符合平台调性的配图。
+
+## 适用场景
+
+- **公众号封面图**：生成吸引点击的文章封面
+- **小红书配图**：生成精美的生活方式图片
+- **微博/抖音配图**：快速生成热点话题配图
+- **头像/表情包**：生成个性化头像和表情
+
+## 推荐模型
+
+| 场景 | 推荐模型 | 原因 |
+|------|----------|------|
+| 精美配图 | `seedream-4.5` | 高质量，支持多种风格 |
+| 批量生成 | `seedream-4.5` | 支持一次生成多张 |
+| 图片修改 | `qwen-image-edit-plus` | 快速编辑调整 |
+
+## 示例：公众号封面
+
+生成科技主题的公众号封面图：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Futuristic AI technology concept, glowing neural network, blue and purple gradient, modern minimalist style, suitable for tech article cover",
+    "size": "1920x1080",
+    "watermark": false
+  }'
+```
+
+## 示例：批量生成配图
+
+一次生成多张不同风格的配图：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Generate 4 different lifestyle images: coffee shop scene, outdoor hiking, cozy reading corner, urban street photography. Each with warm, inviting atmosphere.",
+    "sequential_image_generation": "auto",
+    "sequential_image_generation_options": {
+      "max_images": 4
+    },
+    "size": "1024x1024",
+    "stream": true,
+    "watermark": false
+  }'
+```
+
+## 最佳实践
+
+<Tip>
+1. **明确风格**：在 prompt 中指定具体的视觉风格（如：极简、复古、赛博朋克）
+2. **指定用途**：说明图片用途有助于生成更合适的构图
+3. **批量生成**：使用流式输出批量生成，提高效率
+</Tip>
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="Seedream 图片生成" icon="image" href="/zh/image-api/seedream">
+    查看完整的 Seedream API 文档
+  </Card>
+  <Card title="图像生成选择指南" icon="compass" href="/zh/image-api/guide">
+    帮助您选择合适的模型
+  </Card>
+</CardGroup>
+

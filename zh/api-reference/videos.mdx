@@ -1,0 +1,63 @@
+---
+title: "Videos API"
+description: "视频生成接口规范"
+icon: "video"
+---
+
+## 接口信息
+
+视频生成采用**异步任务模式**：先创建任务，再轮询查询结果。
+
+| 项目 | 说明 |
+|------|------|
+| **创建任务** | `POST /v1/videos` |
+| **查询任务** | `GET /v1/videos/{task_id}` |
+| **请求格式** | JSON |
+| **响应格式** | JSON |
+
+## 基本请求格式
+
+### 创建任务
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "模型名称",
+    "prompt": "视频描述",
+    "metadata": {
+      "input": { ... },
+      "parameters": { ... }
+    }
+  }'
+```
+
+<Warning>
+**AIGC.IT 参数规范：** 除了顶层参数（`model`、`prompt`）外，其他参数都必须放在 `metadata` 对象内。
+</Warning>
+
+### 查询任务
+
+```bash
+curl https://api.aigc.it/v1/videos/<TASK_ID> \
+  -H "Authorization: Bearer <YOUR_TOKEN>"
+```
+
+### 任务状态
+
+| 状态 | 说明 |
+|------|------|
+| `pending` | 排队中 |
+| `processing` | 处理中 |
+| `succeeded` | 已完成，返回 `video_url` |
+| `failed` | 失败，返回错误信息 |
+
+## 支持的模型
+
+不同模型的请求参数不同，请查看对应的模型文档：
+
+<Card title="万相 图生视频" icon="film" href="/zh/video-api/wan-i2v">
+  阿里通义万相系列，支持 5s/10s/15s 视频生成，有声/无声，720P/1080P
+</Card>
+

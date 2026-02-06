@@ -1,0 +1,344 @@
+---
+title: "Seedream 图片生成"
+description: "字节 Seedream 系列图像生成API"
+icon: "image"
+---
+
+## 概述
+
+字节 Seedream 系列图像生成模型，支持文生图、图生图、多图融合、批量生成和流式输出。
+
+## 支持的模型
+
+| 模型 | 特点 |
+|------|------|
+| `seedream-4.5` | 最新版本，功能最全，支持高分辨率、图生图、多图融合、批量生成、流式输出 |
+| `seedream-4.0` | 稳定版本，支持高分辨率、图生图、多图融合 |
+| `seedream-3.0-t2i` | 基础文生图，仅支持文本生成图像 |
+
+<Card title="官方API文档" icon="link" href="https://docs.byteplus.com/en/docs/ModelArk/1541523">
+  查看字节官方API参数说明
+</Card>
+
+## 请求参数
+
+### 基础参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `model` | string | 是 | 模型名称：`seedream-3.0-t2i`、`seedream-4.0`、`seedream-4.5` |
+| `prompt` | string | 是 | 图像生成提示词，最多 2000 tokens |
+| `size` | string | 否 | 输出图像尺寸，支持简化格式或像素格式（见下方说明） |
+| `n` | integer | 否 | 生成图片数量，范围 1-15，默认 1 |
+| `watermark` | boolean | 否 | 是否添加水印，默认 `true` |
+| `prompt_priority` | string | 否 | 提示词优化策略：`standard`（标准模式，质量更高，处理时间更长） |
+
+### 尺寸参数 (size)
+
+支持两种格式：
+
+| 格式 | 说明 | 示例 |
+|------|------|------|
+| 简化格式 | 模型自动确定最佳尺寸 | `2K`、`4K` |
+| 像素格式 | 显式指定宽×高 | `2048x2048`、`2560x1440`、`4096x4096` |
+
+<Note>
+使用简化格式时，可在 prompt 中描述宽高比/形状/用途，模型会自动选择最佳分辨率
+</Note>
+
+### 支持的分辨率
+
+以下是 **Seedream 4.0/4.5** 常用分辨率对照表：
+
+| 宽高比 | 像素尺寸 (宽×高) |
+|--------|------------------|
+| 1:1 | 2048×2048 |
+| 4:3 | 2304×1728 |
+| 3:4 | 1728×2304 |
+| 16:9 | 2560×1440 |
+| 9:16 | 1440×2560 |
+
+### 图片限制
+
+| 限制项 | 说明 |
+|--------|------|
+| 宽高比范围 | [1/16, 16] |
+| 最小宽高 | 大于 14 像素 |
+| 最大总像素 | 不超过 6000×6000 |
+| 单张图片大小 | 最大 10MB |
+| 支持格式 | `.jpeg`, `.jpg`, `.png`, `.webp`, `.bmp`, `.tiff`, `.gif` |
+| 最大参考图数量 | 14 张 |
+| 参考图+生成图总数 | ≤ 15 张 |
+
+### 图生图参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `image` / `image_urls` | string/array | 否 | 参考图像URL，单图为字符串，多图为数组（最多14张） |
+| `sequential_image_generation` | string | 否 | 图像生成模式：`disabled`（单图输出）、`auto`（批量生成） |
+| `sequential_image_generation_options` | object | 否 | 批量生成选项，需配合 `sequential_image_generation: "auto"` |
+| `sequential_image_generation_options.max_images` | integer | 否 | 批量生成的最大图片数量 |
+
+### 流式输出参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `stream` | boolean | 否 | 是否启用流式输出，默认 `false` |
+
+### 回调参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `callback_url` | string | 否 | 任务完成后的 HTTPS 回调地址（仅 HTTPS，最长 2048 字符，超时 10s，最多重试 3 次） |
+
+---
+
+## 文生图用例
+
+### seedream-3.0-t2i
+
+基础文生图，无需复杂配置：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-3.0-t2i",
+    "prompt": "a cat"
+  }'
+```
+
+### seedream-4.0 / seedream-4.5
+
+支持高分辨率和水印控制：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "a cat",
+    "size": "2K",
+    "watermark": false
+  }'
+```
+
+**返回示例：**
+```json
+{
+  "model": "seedream-4-5-251128",
+  "created": 1757323224,
+  "data": [
+    {
+      "url": "https://...",
+      "size": "1760x2368"
+    }
+  ],
+  "usage": {
+    "generated_images": 1,
+    "output_tokens": 16280,
+    "total_tokens": 16280
+  }
+}
+```
+
+## 图生图用例
+
+基于单张参考图进行重绘或变体生成。
+
+**核心参数：**
+- `image`：单张图片URL（字符串）
+- `sequential_image_generation`：设为 `"disabled"` 表示单图输出
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Keep the model pose... Change clothing to transparent water...",
+    "image": "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/seedream4_5_imageToimage.png",
+    "size": "2K",
+    "watermark": false
+  }'
+```
+
+**返回示例：**
+```json
+{
+  "model": "seedream-4-5-251128",
+  "created": 1757323224,
+  "data": [
+    {
+      "url": "https://...",
+      "size": "1760x2368"
+    }
+  ],
+  "usage": {
+    "generated_images": 1,
+    "output_tokens": 16280,
+    "total_tokens": 16280
+  }
+}
+```
+
+---
+
+## 多图融合用例
+
+多张参考图生成单张结果（如：人物+服装=换装效果）。
+
+**核心参数：**
+- `image`：多张图片URL（数组）
+- `sequential_image_generation`：设为 `"disabled"` 表示融合输出单图
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Replace the clothing in image 1 with the outfit from image 2.",
+    "image": [
+      "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/seedream4_5_imageToimage.png",
+      "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/seedream4_5_clothing.png"
+    ],
+    "sequential_image_generation": "disabled",
+    "size": "2K",
+    "watermark": false
+  }'
+```
+
+**返回示例：**
+```json
+{
+  "model": "seedream-4-5-251128",
+  "created": 1757323224,
+  "data": [
+    {
+      "url": "https://...",
+      "size": "1760x2368"
+    }
+  ],
+  "usage": {
+    "generated_images": 1,
+    "output_tokens": 16280,
+    "total_tokens": 16280
+  }
+}
+```
+
+---
+
+## 批量生成用例
+
+一次生成多张图片，适合需要多个变体的场景。
+
+**核心参数：**
+- `sequential_image_generation`：设为 `"auto"` 启用批量生成
+- `sequential_image_generation_options.max_images`：指定生成数量
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Generate 3 images of a girl riding a roller coaster...",
+    "image": [
+      "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/seedream4_5_imageToimage.png"
+    ],
+    "sequential_image_generation": "auto",
+    "sequential_image_generation_options": {
+      "max_images": 3
+    },
+    "size": "2K",
+    "watermark": false
+  }'
+```
+
+**返回示例：**
+```json
+{
+  "model": "seedream-4-5-251128",
+  "created": 1757388756,
+  "data": [
+    { "url": "https://...", "size": "2720x1536" },
+    { "url": "https://...", "size": "2720x1536" },
+    { "url": "https://...", "size": "2720x1536" }
+  ],
+  "usage": {
+    "generated_images": 3,
+    "output_tokens": 48960,
+    "total_tokens": 48960
+  }
+}
+```
+
+---
+
+## 流式输出用例
+
+使用 Server-Sent Events (SSE) 实时返回生成进度和结果。
+
+**核心参数：**
+- `stream`：设为 `true` 启用流式输出
+- 配合 `sequential_image_generation: "auto"` 使用效果最佳
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Generate four images of different poses...",
+    "image": "https://ark-doc.tos-ap-southeast-1.bytepluses.com/doc_image/seedream4_5_imageToimage.png",
+    "sequential_image_generation": "auto",
+    "sequential_image_generation_options": {
+      "max_images": 4
+    },
+    "size": "2K",
+    "stream": true,
+    "watermark": false
+  }'
+```
+
+**流式返回示例：**
+```
+event: image_generation.partial_succeeded
+data: {
+  "type": "image_generation.partial_succeeded",
+  "model": "seedream-4-5-251128",
+  "created": 1757396757,
+  "image_index": 0,
+  "url": "https://...",
+  "size": "2496x1664"
+}
+
+event: image_generation.partial_succeeded
+data: {
+  "type": "image_generation.partial_succeeded",
+  "model": "seedream-4-5-251128",
+  "created": 1757396785,
+  "image_index": 1,
+  "url": "https://...",
+  "size": "2496x1664"
+}
+
+event: image_generation.completed
+data: {
+  "type": "image_generation.completed",
+  "model": "seedream-4-5-251128",
+  "created": 1757396825,
+  "usage": {
+    "generated_images": 2,
+    "output_tokens": 48672,
+    "total_tokens": 48672
+  }
+}
+
+data: [DONE]
+```
+

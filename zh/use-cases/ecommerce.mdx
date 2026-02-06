@@ -1,0 +1,73 @@
+---
+title: "电商商品图"
+description: "使用 AI 生成高质量电商商品图片"
+icon: "cart-shopping"
+---
+
+## 场景介绍
+
+电商平台需要大量高质量的商品图片，传统拍摄成本高、周期长。使用 AI 图像生成可以快速生成多种风格的商品展示图。
+
+## 适用场景
+
+- **商品主图生成**：根据商品描述生成吸引眼球的主图
+- **场景图合成**：将商品放入不同场景中展示
+- **模特换装**：快速生成不同服装搭配效果
+- **背景替换**：统一商品背景风格
+
+## 推荐模型
+
+| 场景 | 推荐模型 | 原因 |
+|------|----------|------|
+| 商品主图 | `seedream-4.5` | 高质量文生图，支持 2K 分辨率 |
+| 模特换装 | `seedream-4.5` | 多图融合，保持人物特征 |
+| 背景替换 | `qwen-image-edit-max` | 精准图像编辑 |
+
+## 示例：模特换装
+
+将模特图片与服装图片融合，生成换装效果：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Replace the clothing in image 1 with the outfit from image 2. Keep the model pose and expression.",
+    "image": [
+      "https://example.com/model.png",
+      "https://example.com/clothing.png"
+    ],
+    "sequential_image_generation": "disabled",
+    "size": "2K",
+    "watermark": false
+  }'
+```
+
+## 示例：商品场景图
+
+生成商品在特定场景中的展示图：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "A premium leather handbag on a marble table, soft natural lighting, luxury boutique background, professional product photography",
+    "size": "2K",
+    "watermark": false
+  }'
+```
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="Seedream 图片生成" icon="image" href="/zh/image-api/seedream">
+    查看完整的 Seedream API 文档
+  </Card>
+  <Card title="qwen-image-edit 图像编辑" icon="wand-magic-sparkles" href="/zh/image-api/qwen-image-edit">
+    查看图像编辑 API 文档
+  </Card>
+</CardGroup>
+

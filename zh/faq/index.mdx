@@ -1,0 +1,104 @@
+---
+title: "常见问题"
+description: "常见问题解答"
+icon: "circle-question"
+---
+
+## 账户相关
+
+<AccordionGroup>
+  <Accordion title="如何获取 API Key？">
+    1. 访问 [api.aigc.it](https://api.aigc.it) 注册账号
+    2. 登录后在控制台创建 API Key
+    3. 复制 API Key 用于后续调用
+  </Accordion>
+
+  <Accordion title="API Key 安全吗？">
+    请妥善保管您的 API Key，不要在公开场所泄露。如果您怀疑 API Key 已泄露，请立即在控制台删除并重新创建。
+  </Accordion>
+
+  <Accordion title="如何充值？">
+    登录 [控制台](https://api.aigc.it) 进行在线充值，支持多种支付方式。
+  </Accordion>
+
+  <Accordion title="支持开具发票吗？">
+    支持。企业用户可联系客服开具增值税发票。
+  </Accordion>
+</AccordionGroup>
+
+## API 使用
+
+<AccordionGroup>
+  <Accordion title="API 兼容 OpenAI 格式吗？">
+    是的，我们的 API 兼容 OpenAI API 格式。您可以使用 OpenAI 官方 SDK，只需将 `base_url` 修改为 `https://api.aigc.it/v1` 即可。
+    
+    详见 [OpenAI SDK 使用](/zh/core-api/openai-sdk)。
+  </Accordion>
+
+  <Accordion title="视频生成需要多长时间？">
+    视频生成时间取决于模型和视频时长：
+    - 5秒视频：通常 1-3 分钟
+    - 10秒视频：通常 2-5 分钟
+    - 15秒视频：通常 3-8 分钟
+    
+    极速版（flash）模型速度更快。
+  </Accordion>
+
+  <Accordion title="图片生成支持什么格式？">
+    支持常见的图片格式，包括 PNG、JPG、WebP 等。返回的图片通常为 PNG 格式。
+  </Accordion>
+
+  <Accordion title="如何选择合适的模型？">
+    - **快速生成短视频**：推荐 `wan2.6-i2v-flash-5s-1080p`
+    - **生成有声视频**：推荐 `wan2.6-i2v-flash-5s-720p-audio`
+    - **高质量文生图**：推荐 `seedream-4.5`
+    - **图像编辑修改**：推荐 `qwen-image-edit-max`
+    
+    详见 [热门模型](/zh/core-api/hot-models) 和 [图像生成选择指南](/zh/image-api/guide)。
+  </Accordion>
+</AccordionGroup>
+
+## 计费相关
+
+<AccordionGroup>
+  <Accordion title="如何计费？">
+    按实际使用量计费，用多少付多少，无最低消费。具体价格请查看 [价格页面](/zh/pricing) 或登录控制台。
+  </Accordion>
+
+  <Accordion title="余额用完会怎样？">
+    余额用完后，API 请求将返回错误。请及时充值以继续使用。
+  </Accordion>
+
+  <Accordion title="生成失败会扣费吗？">
+    不会。只有成功生成的结果才会计费。
+  </Accordion>
+</AccordionGroup>
+
+## 技术问题
+
+<AccordionGroup>
+  <Accordion title="请求超时怎么办？">
+    视频生成是异步任务，需要轮询查询结果。请确保：
+    1. 创建任务后获取 task_id
+    2. 使用 GET 请求查询任务状态
+    3. 适当增加轮询间隔（建议 5-10 秒）
+  </Accordion>
+
+  <Accordion title="返回 401 错误怎么办？">
+    401 错误表示认证失败，请检查：
+    1. API Key 是否正确
+    2. Authorization Header 格式是否正确：`Bearer <YOUR_API_KEY>`
+    3. API Key 是否已被删除或过期
+  </Accordion>
+
+  <Accordion title="返回 429 错误怎么办？">
+    429 错误表示请求过于频繁，请降低请求频率或稍后重试。
+  </Accordion>
+</AccordionGroup>
+
+## 更多帮助
+
+<Card title="联系我们" icon="envelope">
+  如有其他问题，请通过控制台联系客服。
+</Card>
+

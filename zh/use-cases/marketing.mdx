@@ -1,0 +1,81 @@
+---
+title: "营销海报"
+description: "AI 生成营销活动海报和宣传物料"
+icon: "bullhorn"
+---
+
+## 场景介绍
+
+营销活动需要快速产出大量宣传物料，包括活动海报、促销图、Banner 等。AI 图像生成可以大幅提升设计效率。
+
+## 适用场景
+
+- **活动海报**：节日促销、新品发布、品牌活动
+- **Banner 广告**：网站横幅、App 开屏、信息流广告
+- **促销图**：限时折扣、满减活动、会员专享
+- **品牌视觉**：统一风格的系列视觉素材
+
+## 推荐模型
+
+| 场景 | 推荐模型 | 原因 |
+|------|----------|------|
+| 创意海报 | `seedream-4.5` | 高质量，创意表现力强 |
+| 系列素材 | `seedream-4.5` | 批量生成保持风格一致 |
+| 素材修改 | `qwen-image-edit-max` | 精准编辑，保留原有元素 |
+
+## 示例：节日促销海报
+
+生成双十一促销海报：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Double 11 shopping festival promotional poster, vibrant red and gold colors, gift boxes, shopping bags, festive atmosphere, modern e-commerce style, Chinese festival theme",
+    "size": "1080x1920",
+    "watermark": false
+  }'
+```
+
+## 示例：品牌系列素材
+
+批量生成统一风格的品牌素材：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "Generate 3 minimalist brand images for a premium skincare line: 1) product showcase with soft lighting, 2) natural ingredients concept, 3) luxury spa atmosphere. Consistent color palette: white, gold, soft pink.",
+    "sequential_image_generation": "auto",
+    "sequential_image_generation_options": {
+      "max_images": 3
+    },
+    "size": "2K",
+    "stream": true,
+    "watermark": false
+  }'
+```
+
+## 最佳实践
+
+<Tip>
+1. **品牌一致性**：在 prompt 中指定品牌色彩和风格
+2. **尺寸适配**：根据投放渠道选择合适的尺寸
+3. **批量生成**：一次生成多个版本，选择最佳效果
+</Tip>
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="Seedream 图片生成" icon="image" href="/zh/image-api/seedream">
+    查看完整的 Seedream API 文档
+  </Card>
+  <Card title="qwen-image-edit 图像编辑" icon="wand-magic-sparkles" href="/zh/image-api/qwen-image-edit">
+    查看图像编辑 API 文档
+  </Card>
+</CardGroup>
+

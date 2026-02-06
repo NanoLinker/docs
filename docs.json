@@ -1,87 +1,121 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "AIGC.IT API Docs",
+  "name": "AIGC.IT 文档",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#3B82F6",
+    "light": "#60A5FA",
+    "dark": "#1D4ED8"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "首页",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "产品基础",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "zh/index",
+              "zh/quickstart",
+              "zh/api-docs",
+              "zh/pricing",
+              "zh/announcements"
             ]
           },
           {
-            "group": "Customization",
+            "group": "核心 API",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "zh/core-api/hot-models",
+              "zh/core-api/openai-sdk"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "视频生成 API",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "zh/video-api/wan-i2v"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "图像生成 API",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "zh/image-api/guide",
+              "zh/image-api/seedream",
+              "zh/image-api/qwen-image-edit"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API 参考",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "核心接口",
             "pages": [
-              "api-reference/introduction"
+              "zh/api-reference/images",
+              "zh/api-reference/videos"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "图像生成模型",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "zh/image-api/guide",
+              "zh/image-api/seedream",
+              "zh/image-api/qwen-image-edit"
+            ]
+          },
+          {
+            "group": "视频生成模型",
+            "pages": [
+              "zh/video-api/wan-i2v"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "使用场景",
+        "groups": [
+          {
+            "group": "图片生成场景",
+            "pages": [
+              "zh/use-cases/ecommerce",
+              "zh/use-cases/social-media",
+              "zh/use-cases/marketing"
+            ]
+          },
+          {
+            "group": "视频生成场景",
+            "pages": [
+              "zh/use-cases/short-video",
+              "zh/use-cases/product-demo",
+              "zh/use-cases/advertising"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "资源导航",
+        "groups": [
+          {
+            "group": "资源",
+            "pages": [
+              "zh/resources/index"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "常见问题",
+        "groups": [
+          {
+            "group": "FAQ",
+            "pages": [
+              "zh/faq/index"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
@@ -90,34 +124,32 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "首页",
+        "href": "https://api.aigc.it"
+      },
+      {
+        "label": "控制台",
+        "href": "https://api.aigc.it/console"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "登录",
+      "href": "https://api.aigc.it/console"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/aigc-it"
     }
   },
-  "description": "AIGC.IT API Docs"
+  "description": "AIGC.IT - 企业级AI技术API接入平台"
 }

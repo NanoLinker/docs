@@ -1,0 +1,44 @@
+---
+title: "Images API"
+description: "图片生成接口规范"
+icon: "image"
+---
+
+## 接口信息
+
+| 项目 | 说明 |
+|------|------|
+| **接口地址** | `POST /v1/images/generations` |
+| **请求格式** | JSON |
+| **响应格式** | JSON（同步返回结果） |
+
+## 基本请求格式
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "模型名称",
+    "prompt": "图片描述",
+    ...其他参数（根据模型不同而不同）
+  }'
+```
+
+## 支持的模型
+
+不同模型的请求参数不同，请查看对应的模型文档：
+
+<CardGroup cols={2}>
+  <Card title="Seedream 图片生成" icon="wand-magic-sparkles" href="/zh/image-api/seedream">
+    字节跳动 Seedream 系列，支持文生图、图生图、多图融合、批量生成
+  </Card>
+  <Card title="qwen-image-edit 图像编辑" icon="pen-to-square" href="/zh/image-api/qwen-image-edit">
+    阿里通义万相图像编辑，支持单图编辑、多图融合、风格迁移
+  </Card>
+</CardGroup>
+
+<Card title="图像生成API选择指南" icon="compass" href="/zh/image-api/guide">
+  不确定用哪个模型？查看选择指南
+</Card>
+

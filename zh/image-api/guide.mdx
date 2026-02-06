@@ -1,0 +1,77 @@
+---
+title: "图像生成API选择指南"
+description: "帮助您选择合适的图像生成模型"
+icon: "compass"
+---
+
+## 模型对比
+
+| 模型 | 厂商 | 文生图 | 图生图 | 多图融合 | 批量生成 | 流式输出 |
+|------|------|--------|--------|----------|----------|----------|
+| **Seedream 4.5** | 字节 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Seedream 4.0** | 字节 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Seedream 3.0** | 字节 | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **qwen-image-edit-max** | 阿里 | ❌ | ✅ | ✅ | ✅ | ❌ |
+| **qwen-image-edit-plus** | 阿里 | ❌ | ✅ | ✅ | ✅ | ❌ |
+| **qwen-image-edit** | 阿里 | ❌ | ✅ | ✅ | ❌ | ❌ |
+
+## 场景推荐
+
+### 文生图
+
+从文字描述生成图片，推荐使用 **Seedream 4.5**：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "一只可爱的猫咪在阳光下打盹",
+    "size": "2K"
+  }'
+```
+
+### 图生图 / 图像编辑
+
+基于参考图进行修改或重绘：
+
+- **保持风格重绘**：使用 Seedream 4.5
+- **精确编辑修改**：使用 qwen-image-edit-max
+
+### 多图融合
+
+将多张图片融合生成新图（如换装）：
+
+- **Seedream 4.5**：支持多图输入
+- **qwen-image-edit 系列**：支持多图融合
+
+### 批量生成
+
+一次生成多张图片：
+
+- **Seedream 4.5**：使用 `sequential_image_generation: "auto"`
+- **qwen-image-edit-max/plus**：使用 `n` 参数
+
+## 分辨率支持
+
+| 模型 | 自定义分辨率 | 最高分辨率 |
+|------|--------------|------------|
+| Seedream 4.5 | ✅ | 2K |
+| Seedream 4.0 | ✅ | 2K |
+| Seedream 3.0 | ❌ | 1024x1024 |
+| qwen-image-edit-max | ✅ | 自定义 |
+| qwen-image-edit-plus | ✅ | 自定义 |
+| qwen-image-edit | ❌ | 固定 |
+
+## 详细文档
+
+<CardGroup cols={2}>
+  <Card title="Seedream 图片生成" icon="image" href="/zh/image-api/seedream">
+    字节Seedream系列完整文档
+  </Card>
+  <Card title="qwen-image-edit 图像编辑" icon="wand-magic-sparkles" href="/zh/image-api/qwen-image-edit">
+    阿里通义千问图像编辑完整文档
+  </Card>
+</CardGroup>
+

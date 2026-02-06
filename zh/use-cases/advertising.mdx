@@ -1,0 +1,119 @@
+---
+title: "广告素材"
+description: "AI 生成广告投放所需的视频素材"
+icon: "rectangle-ad"
+---
+
+## 场景介绍
+
+广告投放需要大量视频素材进行 A/B 测试和多渠道投放。AI 图生视频可以快速生成多版本广告素材，提升投放效率。
+
+## 适用场景
+
+- **信息流广告**：抖音、快手、微信等平台的信息流视频广告
+- **开屏广告**：App 开屏动态广告
+- **Banner 视频**：网站动态 Banner
+- **素材变体**：同一创意的多个版本用于 A/B 测试
+
+## 推荐模型
+
+| 场景 | 推荐模型 | 原因 |
+|------|----------|------|
+| 信息流广告 | `wan2.6-i2v-flash-5s-720p` | 快速生成，适合批量测试 |
+| 高质量广告 | `wan2.6-i2v-5s-1080p` | 更高质量，适合品牌广告 |
+| 有声广告 | `wan2.6-i2v-flash-5s-720p-audio` | 自动配音，提升吸引力 |
+| 长广告 | `wan2.6-i2v-15s-1080p` | 完整故事叙述 |
+
+## 示例：信息流广告
+
+生成美妆产品的信息流广告视频：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-5s-720p",
+    "prompt": "A beautiful woman applying lipstick, elegant movements, soft lighting, luxury beauty advertisement style, glamorous and sophisticated",
+    "metadata": {
+      "input": {
+        "img_url": "https://example.com/beauty-ad.png"
+      }
+    }
+  }'
+```
+
+## 示例：有声品牌广告
+
+生成带有音效的品牌广告：
+
+```bash
+curl https://api.aigc.it/v1/videos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "model": "wan2.6-i2v-flash-5s-1080p-audio",
+    "prompt": "Luxury car driving through city streets at night, neon lights reflecting on the car surface, cinematic movement, premium automotive advertisement",
+    "metadata": {
+      "input": {
+        "img_url": "https://example.com/car-ad.png"
+      }
+    }
+  }'
+```
+
+## 批量生成素材
+
+使用脚本批量生成多个广告变体：
+
+```python
+import requests
+
+API_KEY = "<YOUR_API_KEY>"
+BASE_URL = "https://api.aigc.it/v1"
+
+prompts = [
+    "Dynamic product showcase, energetic movement",
+    "Elegant slow motion, luxury feel",
+    "Fast-paced action, exciting atmosphere"
+]
+
+for i, prompt in enumerate(prompts):
+    response = requests.post(
+        f"{BASE_URL}/videos",
+        headers={
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "model": "wan2.6-i2v-flash-5s-720p",
+            "prompt": prompt,
+            "metadata": {
+                "input": {
+                    "img_url": "https://example.com/product.png"
+                }
+            }
+        }
+    )
+    print(f"Variant {i+1}: {response.json()}")
+```
+
+## 最佳实践
+
+<Tip>
+1. **多版本测试**：生成多个版本进行 A/B 测试
+2. **平台适配**：根据投放平台选择合适的分辨率和时长
+3. **有声优先**：有声视频通常有更高的转化率
+</Tip>
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="万相 图生视频" icon="video" href="/zh/video-api/wan-i2v">
+    查看完整的视频生成 API 文档
+  </Card>
+  <Card title="营销海报" icon="bullhorn" href="/zh/use-cases/marketing">
+    了解营销图片生成场景
+  </Card>
+</CardGroup>
+

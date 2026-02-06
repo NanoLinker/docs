@@ -1,0 +1,325 @@
+---
+title: "API 开发文档"
+description: "AIGC.IT 图片和视频生成API技术文档。包含所有接口参数说明、Python/Node.js/curl代码示例、错误处理。兼容OpenAI格式，开发者首选。"
+icon: "book"
+---
+
+## 为什么选择 AIGC.IT？
+
+AIGC.IT 提供企业级图片和视频生成API接入服务，解决开发者在使用多家AI模型时的接入门槛和接口统一问题。
+
+### 服务特色
+
+<CardGroup cols={2}>
+  <Card title="官方API直连" icon="link">
+    所有请求直接转发至官方API，无中间处理，保证原生体验和最高稳定性
+  </Card>
+  <Card title="OpenAI 兼容格式" icon="plug">
+    采用 OpenAI 兼容格式，统一接口调用多家图片和视频生成模型
+  </Card>
+  <Card title="高并发支持" icon="bolt">
+    企业级架构设计，支持高并发调用，99.9% 可用性保障
+  </Card>
+  <Card title="按量计费" icon="scale-balanced">
+    按调用次数计费，无月费，用多少付多少，充值秒到账
+  </Card>
+</CardGroup>
+
+### 支持的模型
+
+| 类型 | 模型 | 说明 |
+|------|------|------|
+| **图片生成** | Seedream 4.5 / 4.0 / 3.0 | 字节跳动高质量图片生成，支持文生图、图生图、多图融合 |
+| **图像编辑** | qwen-image-edit | 阿里通义千问图像编辑，支持单图编辑和多图融合 |
+| **视频生成** | 万相 wan2.6 / wan2.5 系列 | 阿里通义万相图生视频，5秒-15秒，支持有声视频 |
+
+---
+
+## 快速开始
+
+### 获取 API Key
+
+1. [注册 AIGC.IT 账号](https://api.aigc.it/register)
+2. 进入[令牌管理页](https://api.aigc.it/console/token)
+3. 复制默认令牌或创建新令牌
+
+### 请求示例
+
+<Tabs>
+  <Tab title="图片生成">
+    ```bash
+    curl -X POST https://api.aigc.it/v1/images/generations \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "seedream-4.5",
+        "prompt": "一只可爱的猫咪在阳光下打盹"
+      }'
+    ```
+  </Tab>
+  <Tab title="视频生成">
+    ```bash
+    # 创建视频任务
+    curl -X POST https://api.aigc.it/v1/videos \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "wan2.6-i2v-flash-5s-720p",
+        "prompt": "一只猫在草地上奔跑",
+        "metadata": {
+          "input": {
+            "img_url": "https://example.com/cat.png"
+          }
+        }
+      }'
+
+    # 查询任务结果
+    curl https://api.aigc.it/v1/videos/TASK_ID \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## 基础信息
+
+### API 端点
+
+| 项目 | 说明 |
+|------|------|
+| **Base URL** | `https://api.aigc.it` |
+| **图片生成** | `POST /v1/images/generations` |
+| **视频创建** | `POST /v1/videos` |
+| **视频查询** | `GET /v1/videos/{task_id}` |
+
+### 认证方式
+
+所有 API 请求需要在 Header 中携带 API Key：
+
+```bash
+Authorization: Bearer sk-xxxxxxxxxxxxxx
+```
+
+<Warning>
+请妥善保管您的 API Key，不要在公开场所泄露，不要提交到 GitHub 公开仓库。
+</Warning>
+
+### 请求格式
+
+- **Content-Type**: `application/json`
+- **编码**: UTF-8
+- **请求体**: JSON 格式
+
+---
+
+## 核心接口
+
+### 1. 图像生成（Images）
+
+生成图片的统一接口，支持文生图、图生图、图像编辑等多种模式。
+
+```bash
+POST https://api.aigc.it/v1/images/generations
+```
+
+**通用请求参数：**
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `model` | string | ✅ | 模型名称，如 `seedream-4.5`、`qwen-image-edit` |
+| `prompt` | string | ✅ | 图片描述提示词 |
+| `n` | integer | ❌ | 生成数量，默认 1 |
+| `size` | string | ❌ | 图片尺寸，如 `1024x1024` |
+
+**响应示例：**
+
+```json
+{
+  "created": 1234567890,
+  "data": [
+    {
+      "url": "https://example.com/image.png"
+    }
+  ]
+}
+```
+
+<Card title="查看各模型详细参数" icon="arrow-right" href="/zh/api-reference/images">
+  不同模型支持的参数有所不同，点击查看完整说明
+</Card>
+
+### 2. 视频生成（Videos）
+
+视频生成采用异步任务模式：先创建任务，再查询结果。
+
+**创建任务：**
+
+```bash
+POST https://api.aigc.it/v1/videos
+```
+
+**AIGC.IT 参数规范：**
+
+<Warning>
+除了 `model` 和 `prompt` 在顶层，其他参数都必须放在 `metadata` 内。
+</Warning>
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `model` | string | ✅ | 模型名称，如 `wan2.6-i2v-flash-5s-720p` |
+| `prompt` | string | ✅ | 视频描述提示词 |
+| `metadata.input.img_url` | string | ✅ | 输入图片 URL |
+| `metadata.parameters.*` | object | ❌ | 其他参数（分辨率、时长等） |
+
+**查询任务：**
+
+```bash
+GET https://api.aigc.it/v1/videos/{task_id}
+```
+
+**任务状态：**
+
+| 状态 | 说明 |
+|------|------|
+| `pending` | 排队中 |
+| `processing` | 处理中 |
+| `completed` | 已完成 |
+| `failed` | 失败 |
+
+<Card title="查看视频API详细参数" icon="arrow-right" href="/zh/api-reference/videos">
+  包含任务状态、回调地址等完整说明
+</Card>
+
+---
+
+## 错误处理
+
+### 错误响应格式
+
+```json
+{
+  "error": {
+    "message": "错误描述",
+    "type": "error_type",
+    "code": "error_code"
+  }
+}
+```
+
+### 常见错误码
+
+| 错误码 | HTTP状态码 | 说明 | 解决方案 |
+|--------|-----------|------|----------|
+| `invalid_api_key` | 401 | API Key 无效 | 检查密钥是否正确 |
+| `insufficient_quota` | 402 | 余额不足 | [充值](https://api.aigc.it/console/topup) |
+| `rate_limit_exceeded` | 429 | 请求过于频繁 | 降低请求频率 |
+| `invalid_request` | 400 | 请求参数错误 | 检查参数格式 |
+| `model_not_found` | 404 | 模型不存在 | 检查模型名称 |
+| `server_error` | 500 | 服务器错误 | 稍后重试 |
+
+### 错误处理示例
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-xxxxxxxxxxxxxx",
+    base_url="https://api.aigc.it/v1"
+)
+
+try:
+    response = client.images.generate(
+        model="seedream-4.5",
+        prompt="一只可爱的猫咪"
+    )
+    print(response.data[0].url)
+except Exception as e:
+    if "insufficient_quota" in str(e):
+        print("余额不足，请充值")
+    elif "rate_limit" in str(e):
+        print("请求过于频繁，请稍后重试")
+    else:
+        print(f"发生错误: {e}")
+```
+
+---
+
+## 最佳实践
+
+### 1. 请求优化
+
+- **使用合适的模型**：根据需求选择模型，不需要最高质量时选择性价比更高的模型
+- **合理设置参数**：避免不必要的参数，减少处理时间
+- **批量处理**：多张图片可以批量提交，减少请求次数
+
+### 2. 错误重试
+
+```python
+import time
+
+def generate_with_retry(prompt, max_retries=3):
+    for i in range(max_retries):
+        try:
+            return client.images.generate(
+                model="seedream-4.5",
+                prompt=prompt
+            )
+        except Exception as e:
+            if "rate_limit" in str(e):
+                time.sleep(2 ** i)  # 指数退避
+                continue
+            raise
+    raise Exception("重试次数用尽")
+```
+
+### 3. 安全建议
+
+- ✅ 使用环境变量存储 API Key
+- ✅ 为不同项目创建不同的密钥
+- ✅ 定期轮换密钥
+- ❌ 不要在前端代码中暴露密钥
+- ❌ 不要提交到公开代码仓库
+
+---
+
+## 详细文档
+
+<CardGroup cols={2}>
+  <Card title="Images API" icon="image" href="/zh/api-reference/images">
+    图片生成接口规范
+  </Card>
+  <Card title="Videos API" icon="video" href="/zh/api-reference/videos">
+    视频生成接口规范
+  </Card>
+  <Card title="Seedream 图片生成" icon="sparkles" href="/zh/image-api/seedream">
+    字节 Seedream 详细文档
+  </Card>
+  <Card title="万相 图生视频" icon="clapperboard" href="/zh/video-api/wan-i2v">
+    阿里万相详细文档
+  </Card>
+  <Card title="qwen-image-edit" icon="wand-magic-sparkles" href="/zh/image-api/qwen-image-edit">
+    通义千问图像编辑文档
+  </Card>
+  <Card title="OpenAI SDK 使用" icon="code" href="/zh/core-api/openai-sdk">
+    使用 OpenAI 官方 SDK 调用
+  </Card>
+</CardGroup>
+
+---
+
+## 需要帮助？
+
+<CardGroup cols={2}>
+  <Card title="快速开始" icon="rocket" href="/zh/quickstart">
+    三步完成 API 接入
+  </Card>
+  <Card title="查看价格" icon="coins" href="https://api.aigc.it/pricing">
+    各模型详细定价
+  </Card>
+</CardGroup>
+
+如有问题，请联系：
+- 📧 邮箱：hi@aigc.it
+- 💬 微信：aigcit
+

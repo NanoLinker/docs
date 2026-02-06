@@ -1,0 +1,102 @@
+---
+title: "OpenAI 官方库使用"
+description: "使用 OpenAI SDK 调用我们的 API"
+icon: "code"
+---
+
+## 概述
+
+我们的 API 兼容 OpenAI API 格式，您可以使用 OpenAI 官方 SDK 进行调用，只需修改 `base_url` 即可。
+
+## Python
+
+### 安装
+
+```bash
+pip install openai
+```
+
+### 图像生成示例
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="<YOUR_API_KEY>",
+    base_url="https://api.aigc.it/v1"
+)
+
+# 文生图
+response = client.images.generate(
+    model="seedream-4.5",
+    prompt="一只可爱的猫咪在阳光下打盹",
+    size="1024x1024"
+)
+
+print(response.data[0].url)
+```
+
+## Node.js
+
+### 安装
+
+```bash
+npm install openai
+```
+
+### 图像生成示例
+
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: '<YOUR_API_KEY>',
+  baseURL: 'https://api.aigc.it/v1'
+});
+
+async function generateImage() {
+  const response = await client.images.generate({
+    model: 'seedream-4.5',
+    prompt: '一只可爱的猫咪在阳光下打盹',
+    size: '1024x1024'
+  });
+
+  console.log(response.data[0].url);
+}
+
+generateImage();
+```
+
+## cURL
+
+直接使用 cURL 调用：
+
+```bash
+curl https://api.aigc.it/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_API_KEY>" \
+  -d '{
+    "model": "seedream-4.5",
+    "prompt": "一只可爱的猫咪在阳光下打盹"
+  }'
+```
+
+## 注意事项
+
+<Warning>
+1. 请将 `base_url` 设置为 `https://api.aigc.it/v1`
+2. 部分高级参数可能需要通过 `extra_body` 传递
+3. 视频生成接口需要使用原生 HTTP 请求
+</Warning>
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="万相 图生视频" icon="video" href="/zh/video-api/wan-i2v">
+    视频生成需要使用原生HTTP请求
+  </Card>
+  <Card title="Seedream 图片生成" icon="image" href="/zh/image-api/seedream">
+    查看完整的图像生成参数
+  </Card>
+</CardGroup>
+
